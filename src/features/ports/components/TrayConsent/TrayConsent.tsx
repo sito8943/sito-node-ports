@@ -1,6 +1,11 @@
 import { t } from "@/lang";
 import { Button } from "@/shared/components/elements/Button";
-import { BUTTON_COLOR, BUTTON_SIZE, BUTTON_VARIANT } from "@/shared/constants";
+import {
+  BUTTON_COLOR,
+  BUTTON_SIZE,
+  BUTTON_VARIANT,
+  SHORTCUT_LABEL,
+} from "@/shared/constants";
 import { TrayConsentProps } from "./types";
 
 import "@/styles/components/TrayConsent.css";
@@ -12,6 +17,7 @@ export function TrayConsent({ onAccept }: TrayConsentProps) {
       <h1>{t("consentTitle")}</h1>
       <p>{t("consentText")}</p>
       <p className="hint">{t("consentHint")}</p>
+      <p className="hint">{t("shortcutHint", SHORTCUT_LABEL)}</p>
       <Button
         color={BUTTON_COLOR.PRIMARY}
         variant={BUTTON_VARIANT.SUBMIT}

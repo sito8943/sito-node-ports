@@ -1,8 +1,10 @@
+use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
 use tauri::tray::TrayIconBuilder;
 use tauri::Manager;
 use tauri_plugin_opener::OpenerExt;
 
+use crate::i18n::texts;
 use crate::processes::{self, NodeProcess};
 
 pub const TRAY_ID: &str = "main-tray";
@@ -11,16 +13,13 @@ const MENU_OPEN_PREFIX: &str = "open:";
 const MENU_KILL_PREFIX: &str = "kill:";
 const MENU_SHOW: &str = "show";
 const MENU_QUIT: &str = "quit";
-
-const TEXT_EMPTY: &str = "Ningún proceso Node escuchando";
-const TEXT_KILL: &str = "Terminar proceso";
-const TEXT_SHOW: &str = "Mostrar ventana";
-const TEXT_QUIT: &str = "Salir";
+// Glifo negro sobre transparente: macOS lo tiñe según el tema de la barra.
+const TRAY_ICON: &[u8] = include_bytes!("../icons/tray.png");
 
 fn header_text(count: usize) -> String {
     match count {
-        1 => "1 proceso Node".to_string(),
-        n => format!("{n} procesos Node"),
+        1 => texts().one_process.to_string(),
+        n => format!("{n} {}", texts().many_processes),
     }
 }
 
@@ -48,7 +47,7 @@ fn process_submenu(
         submenu.append(&MenuItem::with_id(
             app,
             format!("{MENU_OPEN_PREFIX}{port}"),
-            format!("Abrir http://localhost:{port}"),
+            format!("{} http://localhost:{port}", texts().open),
             true,
             None::<&str>,
         )?)?;
@@ -67,20 +66,17 @@ fn process_submenu(
     submenu.append(&MenuItem::with_id(
         app,
         format!("{MENU_KILL_PREFIX}{}", process.pid),
-        TEXT_KILL,
+        texts().kill,
         true,
         None::<&str>,
     )?)?;
     Ok(submenu)
 }
 
-fn build_menu(
-    app: &tauri::AppHandle,
-    list: &[NodeProcess],
-) -> tauri::Result<Menu<tauri::Wry>> {
+fn build_menu(app: &tauri::AppHandle, list: &[NodeProcess]) -> tauri::Result<Menu<tauri::Wry>> {
     let menu = Menu::new(app)?;
     if list.is_empty() {
-        menu.append(&disabled_item(app, TEXT_EMPTY)?)?;
+        menu.append(&disabled_item(app, texts().empty)?)?;
     } else {
         menu.append(&disabled_item(app, &header_text(list.len()))?)?;
         for process in list {
@@ -88,16 +84,46 @@ fn build_menu(
         }
     }
     menu.append(&PredefinedMenuItem::separator(app)?)?;
-    menu.append(&MenuItem::with_id(app, MENU_SHOW, TEXT_SHOW, true, None::<&str>)?)?;
-    menu.append(&MenuItem::with_id(app, MENU_QUIT, TEXT_QUIT, true, None::<&str>)?)?;
+    menu.append(&MenuItem::with_id(
+        app,
+        MENU_SHOW,
+        texts().show,
+        true,
+        None::<&str>,
+    )?)?;
+    menu.append(&MenuItem::with_id(
+        app,
+        MENU_QUIT,
+        texts().quit,
+        true,
+        None::<&str>,
+    )?)?;
     Ok(menu)
 }
 
 pub fn show_main_window(app: &tauri::AppHandle) {
+    // Como accesorio (sin Dock) la app no se activa sola al mostrar la ventana.
+    #[cfg(target_os = "macos")]
+    let _ = app.show();
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.show();
         let _ = window.unminimize();
         let _ = window.set_focus();
+    }
+}
+
+/// Atajo global: alterna la ventana. Es la vía de entrada cuando el icono de
+/// la bandeja queda tapado (pantallas pequeñas, notch, muchos iconos).
+pub fn toggle_main_window(app: &tauri::AppHandle) {
+    let Some(window) = app.get_webview_window("main") else {
+        return;
+    };
+    let visible = window.is_visible().unwrap_or(false);
+    let focused = window.is_focused().unwrap_or(false);
+    if visible && focused {
+        let _ = window.hide();
+    } else {
+        show_main_window(app);
     }
 }
 
@@ -186,12 +212,11 @@ pub fn create(app: &tauri::AppHandle) -> tauri::Result<()> {
     let list = processes::list();
     let menu = build_menu(app, &list)?;
     let mut builder = TrayIconBuilder::with_id(TRAY_ID)
+        .icon(Image::from_bytes(TRAY_ICON)?)
+        .icon_as_template(true)
         .menu(&menu)
         .show_menu_on_left_click(true)
         .on_menu_event(|app, event| on_menu_event(app, event.id.as_ref()));
-    if let Some(icon) = app.default_window_icon() {
-        builder = builder.icon(icon.clone());
-    }
     if !list.is_empty() {
         builder = builder.title(list.len().to_string());
     }

@@ -31,3 +31,6 @@ export const TOOLTIP_ALIGN = {
   CENTER: "center",
   END: "end",
 } as const satisfies Record<string, TooltipAlign>;
+
+// Atajo global que alterna la ventana (TOGGLE_SHORTCUT en src-tauri/src/lib.rs).
+export const SHORTCUT_LABEL = "⌃⌥N";

@@ -12,6 +12,7 @@ import { Spinner } from "@/shared/components/elements/Spinner";
 import {
   BUTTON_COLOR,
   BUTTON_VARIANT,
+  SHORTCUT_LABEL,
   TOOLTIP_ALIGN,
   TOOLTIP_SIDE,
 } from "@/shared/constants";
@@ -101,6 +102,8 @@ export function Ports() {
               </Tooltip>
             </div>
           </header>
+
+          <p className="shortcut-hint">{t("shortcutHint", SHORTCUT_LABEL)}</p>
 
           {processes.length === 0 ? (
             <div className="empty">
