@@ -1,0 +1,19 @@
+[package]
+name = "sito-node-ports"
+version = "0.1.0"
+description = "Procesos Node escuchando puertos, desde la barra de menús"
+authors = ["sito8943"]
+edition = "2021"
+
+[lib]
+name = "sito_node_ports_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

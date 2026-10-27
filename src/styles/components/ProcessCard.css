@@ -1,0 +1,55 @@
+.ProcessCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border: var(--border-width-default) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-card);
+  padding: var(--space-3) var(--space-4);
+}
+
+.ProcessCard header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.ProcessCard h2 {
+  margin: var(--space-0);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ProcessCard .meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.ProcessCard .cwd {
+  margin: var(--space-0);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ProcessCard .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.ProcessCard .ports {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+  font-family: var(--font-mono);
+}
