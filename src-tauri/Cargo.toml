@@ -1,6 +1,6 @@
 [package]
 name = "sito-node-ports"
-version = "0.2.0"
+version = "0.3.0"
 description = "Procesos Node escuchando puertos, desde la barra de menús"
 authors = ["sito8943"]
 edition = "2021"

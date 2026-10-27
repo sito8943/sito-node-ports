@@ -89,6 +89,16 @@ export function PortsProvider({ children }: { children: ReactNode }) {
 
   const hideWindow = useCallback(() => managerRef.current.hideWindow(), []);
 
+  // Escape oculta la ventana; sin bandeja no se oculta para no dejarla inaccesible.
+  useEffect(() => {
+    if (!trayEnabled) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") hideWindow();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [trayEnabled, hideWindow]);
+
   const clearError = useCallback(() => setError(null), []);
 
   const value = useMemo<PortsContextValue>(
