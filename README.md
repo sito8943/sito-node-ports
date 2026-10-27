@@ -6,11 +6,18 @@ App de barra de menús (Tauri 2 + React + `@sito/ui`) que lista los procesos Nod
 - Primer arranque: una ventana pide permiso para instalarse en la barra de menús.
 - Con permiso: la app arranca oculta, sin icono en el Dock. El número junto al
   icono = procesos escuchando.
+- ¿Icono tapado (pantalla pequeña, notch, muchos iconos)? Pulsa **⌃⌥N** desde
+  cualquier app para mostrar u ocultar la ventana, o vuelve a abrir la app desde
+  Spotlight, Launchpad o Finder.
 - Click en el icono: cada proceso aparece como `label · :puertos`. El submenú
   abre `http://localhost:<puerto>`, muestra script, PID y carpeta, y permite
   terminarlo (SIGTERM).
 - **Label** = `name` del `package.json` más cercano al cwd del proceso; si no
   hay, el nombre de la carpeta.
+
+Idiomas: español e inglés, según el idioma preferido de macOS (si no es ninguno
+de los dos, inglés). Textos de la ventana en `src/lang/`, del menú en
+`src-tauri/src/i18n.rs`.
 
 Datos: `lsof -iTCP -sTCP:LISTEN`, `lsof -d cwd` y `ps`. Solo ve procesos de tu
 usuario.
@@ -45,3 +52,12 @@ arranque.
 
 Requisito único: secreto `TAP_GITHUB_TOKEN` en el repo (PAT con Contents:write
 sobre `sito8943/homebrew-tap`).
+
+## Licencia y marcas
+
+MIT, ver [LICENSE](LICENSE).
+
+> **Aviso:** Sito Node Ports es un proyecto independiente. No está afiliado,
+> respaldado ni patrocinado por la OpenJS Foundation ni por el proyecto Node.js.
+> Node.js es una marca registrada de la OpenJS Foundation; su logo se usa como
+> icono de la app solo para identificar con qué trabaja.
